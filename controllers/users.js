@@ -17,7 +17,12 @@ router.post('/signup', async(req, res) => {
             username: req.body.username,
             password: bcrypt.hashSync(req.body.password, SALT_LENGTH)
         })
-        res.status(201).json({ user })
+
+        const token = jwt.sign(
+            {username: user.username, _id: user._id},
+            process.env.JWT_SECRET
+        )
+        res.status(201).json({ user, token })
         
     } catch (error) {
         res.status(400).json({error: error.message})
